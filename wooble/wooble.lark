@@ -1,0 +1,33 @@
+?program: expression+ _NL*
+
+?expression: LP contents RP
+
+?contents: head " " body
+
+head: OPERATOR
+
+?body: (expression | items)+
+
+?items: SIGNED_NUMBER -> number
+    | ESCAPED_STRING -> string
+    | CNAME -> variable
+    | expression
+
+OPERATOR: "*"
+    | "+"
+    | "-"
+    | "/"
+    | "def"
+
+LP: "("
+RP: ")"
+_NL: /(\r?\n[\t ]*)+/
+
+%import common.SIGNED_NUMBER
+%import common.ESCAPED_STRING
+%import common.CNAME
+%import common.WS
+%import common.WS_INLINE
+
+%ignore WS
+%ignore WS_INLINE
