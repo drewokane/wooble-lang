@@ -46,16 +46,23 @@ def
 
         (def SYMBOL BODY)
 
-*
+``*``
     Cumulative multiplication. This is normal multiplication if you only have
     2 numbers. With more than 2, the multiplication accumulates using a reduce
     type of operation. Usage::
 
         (* NUMBER+)
 
+``+``
+
+``-``
+
+``/``
+
 Hacking on Wooble
 ------------------
 
-
-
-
+The Wooble interpreter is written in Python with the help of `lark <https://github.com/lark-parser/lark>`_. The
+project is set up using `poetry <https://poetry.eustace.io/>`_. You'll need to install ``poetry`` to
+get the project working properly of course but beyond this it should be a 
+breeze to get started with Wooble.
