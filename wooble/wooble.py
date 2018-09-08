@@ -1,5 +1,6 @@
 import sys
 
+from collections import Iterable
 from functools import partial, reduce
 from operator import mul, truediv, add, sub
 
@@ -13,7 +14,8 @@ class WoobleTransformer(Transformer):
     number = float
     string = str
 
-    def __init__(self, parser):
+    def __init__(self, parser, verbose=False):
+        self.verbose = verbose
         self.execution_step = 0
         self.fns = {
             "def": self.define_variable,
@@ -36,14 +38,12 @@ class WoobleTransformer(Transformer):
             "params": params.value.split(" "),
             "execution": execution.value
         }
-        print(f"User functions: {self.user_fns}")
-        #print(f"result: {self.parse_and_transform(execution.value)}")
-        return [fname.value, params.value.split(" ")]
 
     def print_and_inc_ex_step(self, step, tokens):
-        self.execution_step += 1
-        print(f"Execution step: {self.execution_step} -> {step}")
-        print(f"Tokens: {tokens}")
+        if self.verbose:
+            self.execution_step += 1
+            print(f"Execution step: {self.execution_step} -> {step}")
+            print(f"Tokens: {tokens}")
 
     def define_variable(self, args):
         self.print_and_inc_ex_step("define_variable", args)
@@ -65,19 +65,31 @@ class WoobleTransformer(Transformer):
         if head.value in self.fns.keys():
             fn = self.fns[head.value]
         else:
-            def fn(*args):
-                pass
+
+            def u_fn(args):
+                function_spec = self.user_fns[head.value]
+                for p, a in zip(function_spec["params"], args):
+                    self.define_variable((p, a))
+                return self.parse_and_transform(function_spec["execution"])
+                
+            fn = u_fn
         return fn
     
     def body(self, *body):
         self.print_and_inc_ex_step("body", body)
         return body
     
+    @staticmethod
+    def _make_iterable(item):
+        return item if isinstance(item, Iterable) else [item]
+    
     def expression(self, lp, contents, rp):
-        self.print_and_inc_ex_step("expression", contents)
-        fn, args = contents
-        args = [self.vars.get(a, a) for a in args]
-        return fn(args)
+        if contents:
+            self.print_and_inc_ex_step("expression", contents)
+            fn, args = contents
+            args = self._make_iterable(args)
+            args = [self.vars.get(a, a) for a in args]
+            return fn(args)
 
 
 def main(program):
@@ -90,7 +102,8 @@ def main(program):
     print(parsed.pretty())
     print("=" * 80)
     transformed = TRANSFORMER.transform(parsed)
-    print(f"{TRANSFORMER.vars}")
+    print(f"Defined variables: {TRANSFORMER.vars}")
+    print(f"User defined functions: {TRANSFORMER.user_fns}")
 
 
 if __name__ == '__main__':
