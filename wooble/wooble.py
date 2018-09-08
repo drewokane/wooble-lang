@@ -1,3 +1,5 @@
+import sys
+
 from functools import partial, reduce
 from operator import mul, truediv, add, sub
 
@@ -11,7 +13,8 @@ class WoobleTransformer(Transformer):
     number = float
     string = str
 
-    def __init__(self):
+    def __init__(self, parser):
+        self.execution_step = 0
         self.fns = {
             "def": self.define_variable,
             "*": partial(reduce, mul),
@@ -19,46 +22,69 @@ class WoobleTransformer(Transformer):
             "-": partial(reduce, sub),
             "/": partial(reduce, truediv)
             }
+        self.user_fns = {}
         self.vars = {}
+        self.parser = parser
+    
+    def parse_and_transform(self, expression):
+        parsed = self.parser.parse(expression)
+        transformed = self.transform(parsed)
+        return transformed
+    
+    def function(self, fname, lp, params, rp, execution):
+        self.user_fns[fname.value] = {
+            "params": params.value.split(" "),
+            "execution": execution.value
+        }
+        print(f"User functions: {self.user_fns}")
+        #print(f"result: {self.parse_and_transform(execution.value)}")
+        return [fname.value, params.value.split(" ")]
+
+    def print_and_inc_ex_step(self, step, tokens):
+        self.execution_step += 1
+        print(f"Execution step: {self.execution_step} -> {step}")
+        print(f"Tokens: {tokens}")
 
     def define_variable(self, args):
+        self.print_and_inc_ex_step("define_variable", args)
         variable, value = args
         if not isinstance(variable, float):
             self.vars[variable] = value
 
     def variable(self, variable: Token):
+        self.print_and_inc_ex_step("variable", variable)
         variable = variable.value
         return variable
     
     def contents(self, head, body):
+        self.print_and_inc_ex_step("contents", [head, body])
         return [head, body]
     
     def head(self, head: Token):
-        return self.fns[head.value]
+        self.print_and_inc_ex_step("head", head)
+        if head.value in self.fns.keys():
+            fn = self.fns[head.value]
+        else:
+            def fn(*args):
+                pass
+        return fn
     
     def body(self, *body):
+        self.print_and_inc_ex_step("body", body)
         return body
     
     def expression(self, lp, contents, rp):
+        self.print_and_inc_ex_step("expression", contents)
         fn, args = contents
         args = [self.vars.get(a, a) for a in args]
         return fn(args)
-    
-    def operator(self, symbol: Token):
-        return symbol.value
 
 
-def main():
+def main(program):
     with open("wooble.lark", "r") as f:
         PARSER = Lark(f, start="program")
     
-    TRANSFORMER = WoobleTransformer()
-    
-    program = """
-    (def a 1)
-    (def b (* 3 a))
-    (def c (* a b (* 3 12) (* 4.6 0.5)))
-    """
+    TRANSFORMER = WoobleTransformer(PARSER)
 
     parsed = PARSER.parse(program)
     print(parsed.pretty())
@@ -68,4 +94,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    with open(sys.argv[1], "r") as program:
+        main(program.read())
