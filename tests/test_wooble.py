@@ -1,4 +1,4 @@
-from lark_experiments import __version__
+from wooble import __version__
 
 
 def test_version():

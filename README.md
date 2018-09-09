@@ -1,6 +1,8 @@
 Wooble
 =======
 
+![](https://travis-ci.org/drewokane/wooble-lang.svg?branch=master)
+
 Welcome to Wooble! Wooble is my attempt at writing an interpreter and learning in the process.
 I gladly welcome feedback and hope to learn from it.
 
