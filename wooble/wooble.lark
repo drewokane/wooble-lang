@@ -22,7 +22,7 @@ _NL: /(\r?\n[\t ]*)+/
 LB: "{"
 RB: "}"
 FNAME: CNAME
-PARAMS: /p[0-9]+/ (" " /p[0-9]+/)*
+PARAMS: CNAME (" " CNAME)*
 EXECUTION: LP /./+ RP
 
 %import common.SIGNED_NUMBER
