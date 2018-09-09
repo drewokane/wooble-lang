@@ -37,3 +37,5 @@ The Wooble interpreter is written in Python with the help of `lark <https://gith
 project is set up using `poetry <https://poetry.eustace.io/>`_. You'll need to install ``poetry`` to
 get the project working properly of course but beyond this it should be a 
 breeze to get started with Wooble.
+
+For more info, check out the [wiki](https://github.com/drewokane/wooble/wiki).
