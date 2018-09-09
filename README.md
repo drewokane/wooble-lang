@@ -7,7 +7,7 @@ I gladly welcome feedback and hope to learn from it.
 The Name
 ---------
 
-See this Blackadder `sketch <https://youtu.be/G2DCExerOsA>`_.
+See this Blackadder [sketch](https://youtu.be/G2DCExerOsA).
 
 The Language
 -------------
@@ -32,8 +32,8 @@ comes from lambda calculus.
 Hacking on Wooble
 ------------------
 
-The Wooble interpreter is written in Python with the help of `lark <https://github.com/lark-parser/lark>`_. The
-project is set up using `poetry <https://poetry.eustace.io/>`_. You'll need to install ``poetry`` to
+The Wooble interpreter is written in Python with the help of [lark](https://github.com/lark-parser/lark). The
+project is set up using [poetry](https://poetry.eustace.io/). You'll need to install `poetry` to
 get the project working properly of course but beyond this it should be a 
 breeze to get started with Wooble.
 
