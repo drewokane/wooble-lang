@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "lark-experiments"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = ["Drew O'Kane <drew.okane@climate.com>"]
 
