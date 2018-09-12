@@ -10,3 +10,7 @@
             4.2)))
 
 (def c (/ a b))
+
+(def a 8)
+
+(echo "a is" a)

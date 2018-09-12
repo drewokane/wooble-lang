@@ -1,4 +1,5 @@
 import sys
+import argparse
 
 from collections import Iterable
 from functools import partial, reduce
@@ -7,6 +8,17 @@ from operator import mul, truediv, add, sub
 from lark import Lark, Transformer, v_args
 from lark.lexer import Token
 from toolz.itertoolz import first, rest
+
+
+def make_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("file", 
+                        type=str, 
+                        help="Path to file to be interpreted.")
+    parser.add_argument("--verbose", 
+                        help="Print out processing statements and order.",
+                        action="store_true")
+    return parser
 
 
 @v_args(inline=True)
@@ -22,11 +34,17 @@ class WoobleTransformer(Transformer):
             "*": partial(reduce, mul),
             "+": partial(reduce, add),
             "-": partial(reduce, sub),
-            "/": partial(reduce, truediv)
+            "/": partial(reduce, truediv),
+            "echo": self._echo
             }
         self.user_fns = {}
         self.vars = {}
         self.parser = parser
+    
+    def _echo(*args):
+        args = map(str, first(rest(args)))
+        args = map(lambda s: s.replace("\"", ""), args)
+        print(" ".join(args))
     
     def parse_and_transform(self, expression):
         parsed = self.parser.parse(expression)
@@ -92,20 +110,27 @@ class WoobleTransformer(Transformer):
             return fn(args)
 
 
-def main(program):
+def main(program, verbose):
     with open("wooble.lark", "r") as f:
         PARSER = Lark(f, start="program")
     
-    TRANSFORMER = WoobleTransformer(PARSER)
+    TRANSFORMER = WoobleTransformer(PARSER, verbose=verbose)
 
     parsed = PARSER.parse(program)
-    print(parsed.pretty())
-    print("=" * 80)
+    
+    if verbose:
+        print(parsed.pretty())
+        print("=" * 80)
+    
     transformed = TRANSFORMER.transform(parsed)
-    print(f"Defined variables: {TRANSFORMER.vars}")
-    print(f"User defined functions: {TRANSFORMER.user_fns}")
+    
+    if verbose:
+        print(f"Defined variables: {TRANSFORMER.vars}")
+        print(f"User defined functions: {TRANSFORMER.user_fns}")
 
 
 if __name__ == '__main__':
-    with open(sys.argv[1], "r") as program:
-        main(program.read())
+    parser = make_parser()
+    args = parser.parse_args()
+    with open(args.file, "r") as program:
+        main(program.read(), args.verbose)
