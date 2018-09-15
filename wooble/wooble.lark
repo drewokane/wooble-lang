@@ -4,15 +4,14 @@
 
 ?contents: head " " body
 
-function: FNAME LP PARAMS RP EXECUTION
+function: SYMBOLS LP PARAMS RP EXECUTION
 
-head: CNAME
-    | /[^a-zA-Z\d\s:]/
+head: SYMBOLS
 
 ?body: (expression | items)+
 
 ?items: SIGNED_NUMBER -> number
-    | ESCAPED_STRING -> string
+    | STRING -> string
     | CNAME -> variable
     | expression
 
@@ -23,7 +22,9 @@ LB: "{"
 RB: "}"
 FNAME: CNAME
 PARAMS: CNAME (" " CNAME)*
-EXECUTION: LP /./+ RP
+EXECUTION: LP /.+/ RP
+SYMBOLS: /\S+/
+STRING: /\".+\"/
 
 %import common.SIGNED_NUMBER
 %import common.ESCAPED_STRING
