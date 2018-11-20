@@ -1,6 +1,6 @@
-(def a (+ 3.7 15))
+(assign a (+ 3.7 15))
 
-(def b 
+(assign b 
     (+ 
         (- 12 a) 
         12 
@@ -9,8 +9,8 @@
             (+ 1 2 3) 
             4.2)))
 
-(def c (/ a b))
+(assign c (/ a b))
 
-(def a 8)
+(assign a [8, 3.2, -1])
 
-(echo "a is" a)
+(echo "a is")

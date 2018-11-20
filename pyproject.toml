@@ -1,8 +1,9 @@
 [tool.poetry]
 name = "lark-experiments"
-version = "0.1.1"
+version = "1.0.0-alpha.0"
 description = ""
-authors = ["Drew O'Kane <drew.okane@climate.com>"]
+authors = ["Drew O'Kane <rhoslug@gmail.com>"]
+repository="https://github.com/drewokane/wooble-lang"
 
 [tool.poetry.dependencies]
 python = "*"

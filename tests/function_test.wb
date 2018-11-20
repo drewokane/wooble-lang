@@ -1,9 +1,9 @@
-{mul-by-2 (p0) (* p0 2)}
+(defn mul_by_2 [p0] (* p0 2))
 
-{square! (x) (* x x)}
+(defn square! [x] (* x x))
 
-(def output (mul-by-2 2))
+(assign output (mul_by_2 2))
 
-(def output2 (mul-by-2 3))
+(assign output2 (mul_by_2 3))
 
-(def square_output (square! 4))
+(assign square_output (square! 4))

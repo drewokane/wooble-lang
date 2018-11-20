@@ -1,0 +1,21 @@
+?program: expression+
+
+?expression: atom
+    | "(" expression+ ")"
+
+?atom: SIGNED_NUMBER -> number
+    | STRING -> string
+    | CNAME -> reference
+    | SYMBOL -> reference
+    | "[" atom ("," atom)* "]" -> lst
+
+SYMBOL: /[^\s\(\)\[\]0-9]+/
+STRING: /".*?(?<!\\)"/
+
+%import common.SIGNED_NUMBER
+%import common.CNAME
+%import common.WS
+%import common.WS_INLINE
+
+%ignore WS
+%ignore WS_INLINE
